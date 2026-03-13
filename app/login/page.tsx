@@ -38,10 +38,11 @@ export default function LoginPage() {
         router.push("/tasks");
       }
     } catch (err: any) {
-      setError(
-        err.response?.data?.message ||
-          "Failed to connect to the server. Is the backend running?",
-      );
+      if (err.response?.status === 401 || err.response?.status === 400) {
+        setError("Incorrect username or password.");
+      } else {
+        setError("Failed to connect to the server. Is the backend running?");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -107,7 +108,7 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-600">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/register"
             className="text-indigo-600 hover:text-indigo-800 font-medium hover:underline"
