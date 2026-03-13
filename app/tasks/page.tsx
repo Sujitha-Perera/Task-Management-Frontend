@@ -4,16 +4,7 @@ import { useState, useEffect, useCallback, useContext } from "react";
 import Link from "next/link";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import FilterBar from "@/components/FilterBar";
-<<<<<<< HEAD
 import taskService, { Task, TaskFilters } from "@/services/taskService";
-=======
-import Pagination from "@/components/Pagination";
-import taskService, {
-  Task,
-  TaskFilters,
-  TaskPage,
-} from "@/services/taskService";
->>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
 import { AuthContext } from "@/context/AuthContext";
 import {
   Plus,
@@ -27,15 +18,10 @@ import {
 } from "lucide-react";
 
 export default function TasksPage() {
-<<<<<<< HEAD
   const PAGE_SIZE = 10;
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
-=======
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
->>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
   const [error, setError] = useState<string>("");
 
   const { role, email } = useContext(AuthContext);
@@ -50,7 +36,6 @@ export default function TasksPage() {
     direction: "desc",
   });
 
-<<<<<<< HEAD
   const fetchTasks = useCallback(
     async (page: number, append = false) => {
       try {
@@ -101,44 +86,6 @@ export default function TasksPage() {
   useEffect(() => {
     setCurrentPage(0);
     fetchTasks(0);
-=======
-  const fetchTasks = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const params: TaskFilters = {
-        page: currentPage,
-        size: 10,
-        ...(filters.status && { status: filters.status }),
-        ...(filters.priority && { priority: filters.priority }),
-        ...(filters.sortBy && { sortBy: filters.sortBy }),
-        ...(filters.direction && { direction: filters.direction }),
-      };
-
-      const data = await taskService.getTasks(params);
-
-      if ("content" in data && Array.isArray(data.content)) {
-        setTasks(data.content);
-        setTotalPages(data.totalPages);
-      } else if (Array.isArray(data)) {
-        setTasks(data);
-        setTotalPages(1);
-      } else {
-        setTasks([]);
-        setTotalPages(0);
-      }
-    } catch (err) {
-      console.error("Error fetching tasks:", err);
-      setError("Failed to load tasks. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, filters]);
-
-  useEffect(() => {
-    fetchTasks();
->>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
   }, [fetchTasks]);
 
   const handleFilterChange = (key: keyof TaskFilters, value: string) => {
@@ -155,12 +102,8 @@ export default function TasksPage() {
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
         await taskService.deleteTask(id);
-<<<<<<< HEAD
         setCurrentPage(0);
         fetchTasks(0);
-=======
-        fetchTasks();
->>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
       } catch (err) {
         alert("Failed to delete task.");
       }
@@ -170,26 +113,19 @@ export default function TasksPage() {
   const handleMarkComplete = async (task: Task) => {
     try {
       await taskService.markComplete(task.id, task);
-<<<<<<< HEAD
       setCurrentPage(0);
       fetchTasks(0);
-=======
-      fetchTasks();
->>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
     } catch (err) {
       alert("Failed to update task.");
     }
   };
 
-<<<<<<< HEAD
   const handleLoadMore = () => {
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
     fetchTasks(nextPage, true);
   };
 
-=======
->>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
   const canModifyTask = (task: Task) => {
     return isAdmin || task.userEmail === email;
   };
@@ -306,15 +242,9 @@ export default function TasksPage() {
           </div>
         ) : (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-<<<<<<< HEAD
             <div className="max-h-[calc(100vh-20rem)] overflow-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50 sticky top-0 z-10">
-=======
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
->>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-1/3">
                       Task
@@ -387,11 +317,7 @@ export default function TasksPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                         {task.dueDate
                           ? new Date(task.dueDate).toLocaleDateString()
-<<<<<<< HEAD
                           : "—"}
-=======
-                          : "â€”"}
->>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end gap-2">
@@ -430,11 +356,9 @@ export default function TasksPage() {
               </table>
             </div>
 
-<<<<<<< HEAD
             <div className="border-t border-gray-100 px-6 py-3 flex items-center justify-between">
               <span className="text-xs text-gray-400">
-                Showing {tasks.length} of {totalPages * PAGE_SIZE} task
-                {totalPages * PAGE_SIZE !== 1 ? "s" : ""}
+                Showing {tasks.length} of {totalPages * PAGE_SIZE} task{totalPages * PAGE_SIZE !== 1 ? "s" : ""}
               </span>
               {currentPage < totalPages - 1 && (
                 <button
@@ -446,13 +370,6 @@ export default function TasksPage() {
                 </button>
               )}
             </div>
-=======
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
->>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
           </div>
         )}
       </div>
