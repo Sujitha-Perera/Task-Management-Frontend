@@ -6,6 +6,10 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import taskService, {
   Task,
   TaskFilters,
+<<<<<<< HEAD
+=======
+  TaskPage,
+>>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
   UserInfo,
 } from "@/services/taskService";
 import { AuthContext } from "@/context/AuthContext";
@@ -25,11 +29,17 @@ import {
 } from "lucide-react";
 
 export default function AdminDashboard() {
+<<<<<<< HEAD
   const PAGE_SIZE = 10;
   const [tasks, setTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
+=======
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [users, setUsers] = useState<UserInfo[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+>>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -40,6 +50,7 @@ export default function AdminDashboard() {
 
   const { name } = useContext(AuthContext);
 
+<<<<<<< HEAD
   const fetchData = useCallback(
     async (page: number, append = false) => {
       try {
@@ -92,14 +103,58 @@ export default function AdminDashboard() {
   useEffect(() => {
     setCurrentPage(0);
     fetchData(0);
+=======
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const [taskData, usersData] = await Promise.all([
+        taskService.getTasks({
+          page: currentPage,
+          size: 10,
+          sortBy: "createdAt",
+          direction: "desc",
+          ...(filterStatus && { status: filterStatus }),
+          ...(filterPriority && { priority: filterPriority }),
+        }),
+        taskService.getAllUsers(),
+      ]);
+
+      if ("content" in taskData && Array.isArray(taskData.content)) {
+        setTasks(taskData.content);
+        setTotalPages(taskData.totalPages);
+        setTotalElements(taskData.totalElements);
+      } else if (Array.isArray(taskData)) {
+        setTasks(taskData);
+        setTotalPages(1);
+        setTotalElements(taskData.length);
+      }
+
+      setUsers(usersData);
+    } catch (err) {
+      console.error("Error loading admin data:", err);
+      setError("Failed to load dashboard data.");
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, filterStatus, filterPriority]);
+
+  useEffect(() => {
+    fetchData();
+>>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
   }, [fetchData]);
 
   const handleDelete = async (id: number) => {
     if (window.confirm("Delete this task? This action cannot be undone.")) {
       try {
         await taskService.deleteTask(id);
+<<<<<<< HEAD
         setCurrentPage(0);
         fetchData(0);
+=======
+        fetchData();
+>>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
       } catch {
         alert("Failed to delete task.");
       }
@@ -109,19 +164,26 @@ export default function AdminDashboard() {
   const handleMarkComplete = async (task: Task) => {
     try {
       await taskService.markComplete(task.id, task);
+<<<<<<< HEAD
       setCurrentPage(0);
       fetchData(0);
+=======
+      fetchData();
+>>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
     } catch {
       alert("Failed to update task status.");
     }
   };
 
+<<<<<<< HEAD
   const handleLoadMore = () => {
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
     fetchData(nextPage, true);
   };
 
+=======
+>>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
   const stats = {
     total: totalElements,
     todo: tasks.filter((t) => t.status === "TODO").length,
@@ -386,9 +448,15 @@ export default function AdminDashboard() {
                   ` for ${users.find((u) => u.email === filterUser)?.name}`}
               </span>
             </div>
+<<<<<<< HEAD
             <div className="max-h-[calc(100vh-24rem)] overflow-auto">
               <table className="min-w-full divide-y divide-gray-100">
                 <thead className="bg-gray-50 sticky top-0 z-10">
+=======
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-100">
+                <thead className="bg-gray-50">
+>>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       Task
@@ -494,6 +562,7 @@ export default function AdminDashboard() {
               </table>
             </div>
 
+<<<<<<< HEAD
             <div className="border-t border-gray-100 px-6 py-3 flex items-center justify-between">
               <span className="text-xs text-gray-400">
                 Showing {filteredTasks.length} of {totalElements} task
@@ -509,6 +578,32 @@ export default function AdminDashboard() {
                 </button>
               )}
             </div>
+=======
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 px-6 py-4 border-t border-gray-100">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                  disabled={currentPage === 0}
+                  className="px-3 py-1.5 text-sm border border-gray-200 rounded-md disabled:opacity-50 hover:bg-gray-50 transition-colors"
+                >
+                  Previous
+                </button>
+                <span className="text-sm text-gray-600">
+                  Page {currentPage + 1} of {totalPages}
+                </span>
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
+                  }
+                  disabled={currentPage >= totalPages - 1}
+                  className="px-3 py-1.5 text-sm border border-gray-200 rounded-md disabled:opacity-50 hover:bg-gray-50 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+>>>>>>> f19f88726695556864fbedd8991e47c9f5d118f6
           </div>
         )}
       </div>
